@@ -37,6 +37,5 @@ def predict():
     return str(np.round(prediction, 2)) 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",debug=True, port=5000)
-    http_server = WSGIServer(('', 5000), app)
+    http_server = WSGIServer(('0.0.0.0', 5000), app)
     http_server.serve_forever()
