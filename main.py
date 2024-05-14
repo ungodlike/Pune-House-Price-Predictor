@@ -37,5 +37,5 @@ def predict():
     return str(np.round(prediction, 2)) 
 
 if __name__ == "__main__":
-    http_server = WSGIServer(('0.0.0.0', 5000), app)
-    http_server.serve_forever()
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=5000)
