@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pune House Price Predictor</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5; 
+  }
+
+  .card {
+    background-color: #ffffff; 
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+  }
+
+  .input-group {
+    margin-bottom: 15px;
+  }
+
+  .input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333; 
+  }
+
+  .input-group input,
+  .input-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+
+  .button {
+    background-color: #007bff; 
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+
+  .button:hover {
+    background-color: #0056b3; 
+  }
+
+  .disclaimer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+  }
+
+</style>
+</head>
+<body>
+<div class="card">
+  <h2 style="color: #007bff;">Pune House Price Predictor</h2> <!-- Blue title -->
+  <form method="post", accept-charset="UTF-8">
+    <div class="input-group">
+      <label for="site_location">Select Location:</label>
+      <select id="site_location" name="site_location">
+        {% for site_location in site_locations %}
+            <option value="{{ site_location }}">{{ site_location }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="bhk">Enter BHK:</label>
+      <input type="number" id="bhk" name="bhk" placeholder="Enter BHK..." min="1" max="10">
+    </div>
+    <div class="input-group">
+      <label for="bath">Enter number of bathrooms:</label>
+      <input type="number" id="bath" name="bath" placeholder="Enter number of bathrooms..." min="1" max="10">
+    </div>
+    <div class="input-group">
+      <label for="total_sqft">Enter total square feet:</label>
+      <input type="number" id="total_sqft" name="total_sqft" placeholder="Enter total square feet..." min="600" max="10000">
+    </div>
+    <button type="submit" class="button" onclick="send_data()">Predict Price</button>
+  </form>
+  <div class="prediction">
+    <h3><span id="prediction"></span></h3>
+  </div>
+  <div class="disclaimer">
+    Disclaimer: These prices may be old and are used for a practice project. Please check the actual prices on reputable websites. The 
+    model uses Linear Regression followed by Ridge Regularization
+    
+  </div>
+  <div class="disclaimer">
+    <b>Created by Shhahzaan Khan</b>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+    function validateForm() { //function to limit user input values in a range
+    var bhk = document.getElementById("bhk").value;
+    var bathrooms = document.getElementById("bathrooms").value;
+    var sqft = document.getElementById("sqft").value;
+
+    if (bhk < 1 || bhk > 10) {
+      alert("BHK must be between 1 and 10");
+      return false;
+    }
+
+    if (bathrooms < 1 || bathrooms > 10) {
+      alert("Number of bathrooms must be between 1 and 10");
+      return false;
+    }
+
+    if (sqft < 1 || sqft > 15000) {
+      alert("Total square feet must be between 1 and 10000");
+      return false;
+    }
+
+    return true;
+    }
+
+    function form_handler(event){
+        event.preventDefault(); //supress default form behaviour
+    }
+
+    function send_data(){
+        document.querySelector('form').addEventListener("submit", form_handler);
+
+        var fd = new FormData(document.querySelector('form')); //select the form and store in fd object
+
+        var xhr = new XMLHttpRequest(); //to make new http request for server
+
+        xhr.open('POST','/predict', true); //will open (not send yet) (post) data to the server, specifically to /predict
+
+        document.getElementById("prediction").innerHTML = "Wait Predicting Price!..."; //takes a span with id prediction and change it to "wait predicting"
+
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState == XMLHttpRequest.DONE){ //once request is done and we get the response
+                document.getElementById('prediction').innerHTML = "Prediction: ₹" + xhr.responseText //change the innerhtml of the prediction part with the xhrresponse
+            }
+        };
+
+        xhr.onload = function(){};
+        xhr.send(fd); //sends data to server
+    }
+</script>
