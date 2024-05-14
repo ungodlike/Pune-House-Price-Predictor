@@ -3,4 +3,4 @@ flask-Cors
 numpy
 pandas
 scikit-learn
-gevent
+waitress
