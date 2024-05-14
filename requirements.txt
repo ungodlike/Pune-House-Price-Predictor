@@ -2,3 +2,4 @@
 Flask-Cors
 numpy
 pandas
+sklearn
