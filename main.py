@@ -4,7 +4,7 @@ import numpy as np
 from flask import Flask, render_template, request
 from flask_cors import CORS
 import os
-
+from gevent.pywsgi import WSGIserver
 #os.chdir(os.path.dirname(__file__))
 
 
@@ -38,3 +38,5 @@ def predict():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",debug=True, port=5000)
+    http_server = WSGIServer(('', 5000), app)
+    http_server.serve_forever()
